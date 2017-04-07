@@ -1,6 +1,7 @@
 <?php
 
 namespace Confidences\ZendGeoip\Exception;
+
 /**
  * DomainException
  *

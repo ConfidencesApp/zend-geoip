@@ -1,7 +1,9 @@
-ZendGeoip [![Build Status](https://travis-ci.org/snapshotpl/ZendGeoip.png?branch=master)](https://travis-ci.org/snapshotpl/ZendGeoip) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/snapshotpl/ZendGeoip/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/snapshotpl/ZendGeoip/?branch=master)
+ZendGeoip [![Build Status](https://travis-ci.org/ConfidencesApp/zend-geoip.svg?branch=master)](https://travis-ci.org/snapshotpl/ZendGeoip) 
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ConfidencesApp/zend-geoip/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ConfidencesApp/zend-geoip/?branch=master)
+[![Code Coverage](https://coveralls.io/repos/ConfidencesApp/zend-geoip/badge.svg?branch=master)](https://coveralls.io/r/ConfidencesApp/zend-geoip?branch=master)
 ===========
 
-Maxmind Geoip module for Zend Framework 2
+Maxmind Geoip module for Zend Framework 3
 
 Created by Witold Wasiczko
 
@@ -38,7 +40,7 @@ You can also implements `\ZendGeoip\IpAwareInterface` interface and then use ins
 <?php echo $this->geoip($user)->getTimezone() ?>
 ```
 
-Avaliable getter methods via `\ZendGeoip\Entity\Record`:
+Available getter methods via `\ZendGeoip\Entity\Record`:
 ```
 getAreaCode()
 getCity()
@@ -93,10 +95,10 @@ Or use autoupdate database during install/update in composer (just add this line
 {
     "scripts": {
         "post-install-cmd": [
-            "ZendGeoip\\Composer\\ScriptHandler::downloadData"
+            "Confidences\\ZendGeoip\\Composer\\ScriptHandler::downloadData"
         ],
         "post-update-cmd": [
-            "ZendGeoip\\Composer\\ScriptHandler::downloadData"
+            "Confidences\\ZendGeoip\\Composer\\ScriptHandler::downloadData"
         ]
     }
 }

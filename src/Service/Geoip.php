@@ -38,11 +38,6 @@ class Geoip implements EventManagerAwareInterface
     private $config;
 
     /**
-     * @var Record
-     */
-    private $record;
-
-    /**
      * @var ClassMethods
      */
     private $hydrator;
@@ -61,21 +56,20 @@ class Geoip implements EventManagerAwareInterface
      * @var string|bool
      */
     private $defaultIp;
-
     /**
      * @var array
      */
     private $regions;
 
     /**
-     * Geoip constructor.
-     * Request $request, DatabaseConfig $config, Record $record, ClassMethods $hydrator
+     * Geoip constructor
+     * Request $request, DatabaseConfig $config, Array $records, ClassMethods $hydrator
      */
-    public function __construct(Request $request, DatabaseConfig $config, Record $record, ClassMethods $hydrator)
+    public function __construct(Request $request, DatabaseConfig $config, array $records, ClassMethods $hydrator)
     {
         $this->request = $request;
         $this->config = $config;
-        $this->record = $record;
+        $this->records = $records;
         $this->hydrator = $hydrator;
     }
 
@@ -144,12 +138,8 @@ class Geoip implements EventManagerAwareInterface
      */
     public function getRecord($ipAdress = null)
     {
-        $record = $this->record;
+        $record = new Record();
         /* @var $record RecordInterface */
-
-        if (!$record instanceof RecordInterface) {
-            throw new DomainException('Incorrect record implementation');
-        }
 
         $geoipRecord = $this->getGeoipRecord($ipAdress);
 
@@ -202,7 +192,6 @@ class Geoip implements EventManagerAwareInterface
         if ($this->regions === null) {
             $regionVarPath = $this->config->getRegionVarsPath();
             include($regionVarPath);
-
             if (!isset($GEOIP_REGION_NAME)) {
                 throw new DomainException(sprintf('Missing region names data in path %s', $regionVarPath));
             }

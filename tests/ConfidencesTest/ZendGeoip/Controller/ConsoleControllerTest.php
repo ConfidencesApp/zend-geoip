@@ -6,10 +6,11 @@ use Confidences\ZendGeoip\Controller\ConsoleController;
 use ConfidencesTest\ZendGeoip\Asset\ConsoleControllerAsset;
 use Confidences\ZendGeoip\DatabaseConfig;
 use ConfidencesTest\ZendGeoip\Asset\ConsoleControllerDBAsset;
+use ConfidencesTest\ZendGeoip\Asset\ConsoleControllerDBResponseAsset;
+use ConfidencesTest\ZendGeoip\Asset\ConsoleControllerDBStatusAsset;
 use ConfidencesTest\ZendGeoip\Util\ServiceManagerFactory;
 use Confidences\ZendGeoip\HttpClientFactory;
 use Zend\Console\ColorInterface as Color;
-use Guzzle\Http\Message\Response;
 use Zend\Console;
 use Zend\Http;
 use Zend\Log\Exception\RuntimeException;
@@ -177,34 +178,25 @@ class ConsoleControllerTest extends \PHPUnit\Framework\TestCase
 
     public function testDatabaseDownloadFalse()
     {
+        $fakeConsoleController = new ConsoleControllerDBResponseAsset($this->console, $this->config, $this->client);
+
         $this->request = $this->getMockBuilder(Console\Request::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $reflection_property = $this->reflection->getProperty('request');
         $reflection_property->setAccessible(true);
-        $reflection_property->setValue($this->trueConsoleController, $this->request);
+        $reflection_property->setValue($fakeConsoleController, $this->request);
 
-        $this->response = null;
-        $reflection_property = $this->reflection->getProperty('response');
+        $this->assertNull($fakeConsoleController->downloadAction());
+
+        $fakeConsoleController = new ConsoleControllerDBStatusAsset($this->console, $this->config, $this->client);
+
+        $reflection_property = $this->reflection->getProperty('request');
         $reflection_property->setAccessible(true);
-        $reflection_property->setValue($this->trueConsoleController, $this->response);
+        $reflection_property->setValue($fakeConsoleController, $this->request);
 
-        $this->assertNull($this->trueConsoleController->downloadAction());
-
-        $this->response = $this->getMockBuilder(Response::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-
-        $this->response->expects($this->any())
-            ->method('getStatusCode')
-            ->will($this->returnValue('STATUS_CODE_200'));
-
-        $reflection_property = $this->reflection->getProperty('response');
-        $reflection_property->setAccessible(true);
-        $reflection_property->setValue($this->trueConsoleController, $this->response);
-
-        $this->assertNull($this->trueConsoleController->downloadAction());
+        $this->assertNull($fakeConsoleController->downloadAction());
     }
 
     public function testDatabaseDownloadTrue()
@@ -218,6 +210,19 @@ class ConsoleControllerTest extends \PHPUnit\Framework\TestCase
         $reflection_property->setValue($this->consoleController, $this->request);
 
         $this->assertNotNull($this->consoleController->downloadAction());
+    }
+
+    public function testDatabaseDownload()
+    {
+        $this->request = $this->getMockBuilder(Console\Request::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $reflection_property = $this->reflection->getProperty('request');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->trueConsoleController, $this->request);
+
+        $this->assertNull($this->trueConsoleController->downloadAction());
     }
 
     public function testGetDbResponse()

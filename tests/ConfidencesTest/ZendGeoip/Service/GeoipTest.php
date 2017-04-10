@@ -5,6 +5,7 @@ namespace ConfidencesTest\ZendGeoip\Service;
 use Confidences\ZendGeoip\DatabaseConfig;
 use Confidences\ZendGeoip\Entity\Record;
 use Zend\Http\Request;
+use Zend\Http\PhpEnvironment\Request as HttpRequest;
 use Zend\Hydrator\ClassMethods;
 use Confidences\ZendGeoip\Service\Geoip;
 use Confidences\ZendGeoip\IpAwareInterface;
@@ -12,6 +13,7 @@ use Confidences\ZendGeoip\Exception\DomainException;
 use ConfidencesTest\ZendGeoip\Util\ServiceManagerFactory;
 use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerInterface;
+use geoiprecord as GeoipCoreRecord;
 
 /**
  * ServiceGeoipTest
@@ -36,9 +38,9 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
     protected $config;
 
     /**
-     * @var Record
+     * @var GeoipCoreRecord[]
      */
-    protected $record;
+    protected $records;
 
     /**
      * @var ClassMethods
@@ -49,11 +51,6 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
      * @var \ReflectionClass
      */
     protected $reflection;
-
-    /**
-     * @var \GeoIP
-     */
-    protected $gip;
 
     /**
      * @var ServiceManagerFactory
@@ -77,13 +74,13 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
         ,'destination' => __DIR__ . '/../../../../data/'
         ,'filename' => 'GeoLiteCity.dat'
         ,'flag' => GEOIP_STANDARD
-        ,'regionvars' => __DIR__ . '/../../../geoip/geoip/src/geoipregionvars.php'
+        ,'regionvars' => __DIR__ . '/../../../../vendor/geoip/geoip/src/geoipregionvars.php'
         );
         $this->config = new DatabaseConfig($data);
-        $this->record = $this->serviceManager->get(Record::class);
+        $this->records = array(new GeoipCoreRecord());
         $this->hydrator = new ClassMethods();
 
-        $this->geoip = new Geoip($this->request, $this->config, $this->record, $this->hydrator);
+        $this->geoip = new Geoip($this->request, $this->config, $this->records, $this->hydrator);
         $this->reflection = new \ReflectionClass($this->geoip);
     }
 
@@ -153,11 +150,11 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
 
     public function testGetGeoipRecord()
     {
-        $record = array('192.168.0.1' => '192.168.0.1');
+        $records = array('192.168.0.1' => '192.168.0.1');
 
         $reflection_property = $this->reflection->getProperty('records');
         $reflection_property->setAccessible(true);
-        $reflection_property->setValue($this->geoip, $record);
+        $reflection_property->setValue($this->geoip, $records);
 
         $ip = '192.168.0.1';
         $this->assertEquals($ip, $this->geoip->getGeoipRecord($ip));
@@ -176,19 +173,12 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(Record::class, $this->geoip->getRecord($ip));
     }
 
-    /**
-     * @expectedException DomainException
-     */
-    public function testGetRecordInterfaceFalse()
+    public function testGetRecordTrue()
     {
-        $reflection_property = $this->reflection->getProperty('record');
-        $reflection_property->setAccessible(true);
-        $reflection_property->setValue($this->geoip, null);
-
-        $this->geoip->getRecord();
+        $this->assertNotNull($this->geoip->getRecord('216.239.51.99'));
     }
 
-    public function testGetRecordInterfaceGeoipCoreFalse()//ok
+    public function testGetRecordInterfaceGeoipCoreFalse()
     {
         $this->assertInstanceOf(Record::class, $this->geoip->getRecord());
     }
@@ -209,25 +199,40 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
 
     public function testGetDefaultIpNullFalse()
     {
-        $reflection_property = $this->reflection->getProperty('defaultIp');
-        $reflection_property->setAccessible(true);
-        $reflection_property->setValue($this->geoip, '192.168.0.1');
+        $this->assertInstanceOf(Record::class, $this->geoip->getRecord());
+    }
 
-        $this->assertEquals($this->record, $this->geoip->getRecord());
+    public function testGetDefaultIpNullTrue()
+    {
+        $request = $this->getMockBuilder(HttpRequest::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $reflection_property = $this->reflection->getProperty('request');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->geoip, $request);
+
+        $this->assertInstanceOf(Record::class, $this->geoip->getRecord());
     }
 
     /**
      * @expectedException DomainException
      */
-    public function testGetRegionsNull()
+    public function testGetRegionsNullFalse()
     {
+        $gip = $this->geoip->getGeoip();
+
+        $reflection_property = $this->reflection->getProperty('geoip');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->geoip, $gip);
+
         $config = $this->getMockBuilder(DatabaseConfig::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $config->expects($this->any())
             ->method('getRegionVarsPath')
-            ->will($this->returnValue(null));
+            ->will($this->returnValue(__DIR__ . '/../../../../public/index.php'));
 
         $reflection_property = $this->reflection->getProperty('config');
         $reflection_property->setAccessible(true);
@@ -237,7 +242,12 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
         $reflection_property->setAccessible(true);
         $reflection_property->setValue($this->geoip, null);
 
-        $this->geoip->getRecord();
+        $this->geoip->getRecord('216.239.51.99');
+    }
+
+    public function testGetRegionsNullTrue()
+    {
+        $this->assertInstanceOf(Record::class, $this->geoip->getRecord('216.239.51.99'));
     }
 
     public function testGetRegionsNotNull()
@@ -248,6 +258,6 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
         $reflection_property->setAccessible(true);
         $reflection_property->setValue($this->geoip, $regions);
 
-        $this->assertInstanceOf(Record::class, $this->geoip->getRecord());
+        $this->assertInstanceOf(Record::class, $this->geoip->getRecord('216.239.51.99'));
     }
 }

@@ -6,8 +6,8 @@ use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\Hydrator\ClassMethods;
 use Zend\Http\Request;
 use Confidences\ZendGeoip\DatabaseConfig;
-use Confidences\ZendGeoip\Entity\Record;
 use Interop\Container\ContainerInterface;
+use geoiprecord as GeoipCoreRecord;
 
 /**
  * Factory of ZendGeoip\View\Helper\Geoip
@@ -23,8 +23,8 @@ class GeoipFactory implements FactoryInterface
     {
         $request = new Request();
         $config = $container->get(DatabaseConfig::class);
-        $record = $container->get(Record::class);
+        $records = array(new GeoipCoreRecord());
         $hydrator = $container->get(ClassMethods::class);
-        return new Geoip($request, $config, $record, $hydrator);
+        return new Geoip($request, $config, $records, $hydrator);
     }
 }

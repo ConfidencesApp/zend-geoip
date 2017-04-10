@@ -1,0 +1,18 @@
+# Composer files
+composer.phar
+vendor/
+
+# Local configs
+config/autoload/*.local.php
+
+# Data
+data/GeoLiteCity.dat
+data/GeoLiteCity.dat.gz
+
+# IDE
+/.idea
+
+# Ignore PHPUnit coverage file
+clover.xml
+coveralls-upload.json
+phpci.yml

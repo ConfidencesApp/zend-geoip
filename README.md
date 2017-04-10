@@ -1,6 +1,6 @@
-ZendGeoip [![Build Status](https://travis-ci.org/ConfidencesApp/zend-geoip.svg?branch=master)](https://travis-ci.org/snapshotpl/ZendGeoip) 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/ConfidencesApp/zend-geoip/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/ConfidencesApp/zend-geoip/?branch=master)
-[![Code Coverage](https://coveralls.io/repos/ConfidencesApp/zend-geoip/badge.svg?branch=master)](https://coveralls.io/r/ConfidencesApp/zend-geoip?branch=master)
+ZendGeoip [![Build Status](https://travis-ci.org/ConfidencesApp/zend-geoip.svg?branch=master)](https://travis-ci.org/ConfidencesApp/zend-geoip) 
+[![Latest Stable Version](https://poser.pugx.org/ConfidencesApp/zend-geoip/v/stable)](https://packagist.org/packages/ConfidencesApp/zend-geoip)
+[![Coverage Status](https://coveralls.io/repos/github/ConfidencesApp/zend-geoip/badge.svg?branch=master)](https://coveralls.io/github/ConfidencesApp/zend-geoip?branch=master)
 ===========
 
 Maxmind Geoip module for Zend Framework 3

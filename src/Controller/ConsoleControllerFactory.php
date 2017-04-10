@@ -3,9 +3,10 @@
 namespace Confidences\ZendGeoip\Controller;
 
 use Zend\ServiceManager\Factory\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
 use Interop\Container\ContainerInterface;
+use Zend\Console\Adapter\AdapterInterface as Console;
 use Confidences\ZendGeoip\DatabaseConfig;
+use Confidences\ZendGeoip\HttpClientFactory;
 
 /**
  * Factory of ConsoleController
@@ -19,9 +20,9 @@ class ConsoleControllerFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $console = $container->get('Console');
+        $console = $container->get(Console::class);
         $config = $container->get(DatabaseConfig::class);
-        $httpClient = $container->get('ZendGeoip\HttpClient');
+        $httpClient = $container->get(HttpClientFactory::class);
 
         return new $requestedName($console, $config, $httpClient);
     }

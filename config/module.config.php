@@ -35,25 +35,16 @@ return [
             Entity\Record::class => InvokableFactory::class,
             Service\Geoip::class => Service\GeoipFactory::class,
             DatabaseConfig::class => DatabaseConfigFactory::class,
-            'HttpClient' => HttpClientFactory::class
-        ],
-        'aliases' => [
-            'geoip' => Service\Geoip::class,
-            'geoip_record' => Entity\Record::class,
-            'geoip_hydrator' => ClassMethods::class
+            HttpClientFactory::class => HttpClientFactory::class
         ],
         'shared' => [
-            Entity\Record::class => false,
-            'geoip_record' => false,
+            Entity\Record::class => false
         ],
     ],
     'view_helpers' => [
         'factories' => [
             Helper\Geoip::class => Helper\GeoipFactory::class,
         ],
-        'aliases' => [
-            'geoip' => Helper\Geoip::class,
-        ]
     ],
     'controllers' => [
         'factories' => [

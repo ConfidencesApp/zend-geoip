@@ -2,6 +2,7 @@
 
 namespace ConfidencesTest\ZendGeoip;
 
+use Confidences\ZendGeoip\HttpClientFactory;
 use ConfidencesTest\ZendGeoip\Util\ServiceManagerFactory;
 use Zend\Http\Client;
 
@@ -17,7 +18,7 @@ class HttpClientFactoryTest extends \PHPUnit\Framework\TestCase
     public function testFactoryCreatesService()
     {
         $serviceManager = ServiceManagerFactory::getServiceManager();
-        $httpClient = $serviceManager->get('HttpClient');
+        $httpClient = $serviceManager->get(HttpClientFactory::class);
         $this->assertInstanceOf(Client::class, $httpClient);
     }
 }

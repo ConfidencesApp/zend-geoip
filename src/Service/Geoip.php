@@ -3,6 +3,7 @@
 namespace Confidences\ZendGeoip\Service;
 
 use Confidences\ZendGeoip\DatabaseConfig;
+use Confidences\ZendGeoip\Entity\Record;
 use Confidences\ZendGeoip\Entity\RecordInterface;
 use Confidences\ZendGeoip\Exception\DomainException;
 use Confidences\ZendGeoip\IpAwareInterface;
@@ -10,7 +11,8 @@ use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\EventManager;
 use Zend\Http\PhpEnvironment\Request as HttpRequest;
-use Zend\ServiceManager\ServiceManager;
+use Zend\Http\Request;
+use Zend\Hydrator\ClassMethods;
 use geoiprecord as GeoipCoreRecord;
 
 /**
@@ -26,9 +28,24 @@ class Geoip implements EventManagerAwareInterface
     private $geoip;
 
     /**
-     * @var ServiceManager
+     * @var Request
      */
-    private $serviceManager;
+    private $request;
+
+    /**
+     * @var DatabaseConfig
+     */
+    private $config;
+
+    /**
+     * @var Record
+     */
+    private $record;
+
+    /**
+     * @var ClassMethods
+     */
+    private $hydrator;
 
     /**
      * @var EventManagerInterface
@@ -46,22 +63,20 @@ class Geoip implements EventManagerAwareInterface
     private $defaultIp;
 
     /**
-     * @var DatabaseConfig
-     */
-    private $config;
-
-    /**
      * @var array
      */
     private $regions;
 
     /**
      * Geoip constructor.
-     * @param ServiceManager $serviceManager
+     * Request $request, DatabaseConfig $config, Record $record, ClassMethods $hydrator
      */
-    public function __construct(ServiceManager $serviceManager)
+    public function __construct(Request $request, DatabaseConfig $config, Record $record, ClassMethods $hydrator)
     {
-        $this->serviceManager = $serviceManager;
+        $this->request = $request;
+        $this->config = $config;
+        $this->record = $record;
+        $this->hydrator = $hydrator;
     }
 
     /**
@@ -79,9 +94,9 @@ class Geoip implements EventManagerAwareInterface
     public function getGeoip()
     {
         if (!$this->geoip) {
-            $database = $this->getConfig()->getDatabasePath();
+            $database = $this->config->getDatabasePath();
             if (file_exists($database)) {
-                $this->geoip = geoip_open($database, $this->getConfig()->getFlag());
+                $this->geoip = geoip_open($database, $this->config->getFlag());
             } else {
                 throw new DomainException('You need to download Maxmind database. 
                 You can use ZFTool or composer.json for that :)');
@@ -129,7 +144,7 @@ class Geoip implements EventManagerAwareInterface
      */
     public function getRecord($ipAdress = null)
     {
-        $record = $this->serviceManager->get('geoip_record');
+        $record = $this->record;
         /* @var $record RecordInterface */
 
         if (!$record instanceof RecordInterface) {
@@ -145,7 +160,7 @@ class Geoip implements EventManagerAwareInterface
         $data = get_object_vars($geoipRecord);
         $data['region_name'] = $this->getRegionName($data);
 
-        $hydrator = $this->serviceManager->get('geoip_hydrator');
+        $hydrator = $this->hydrator;
         /* @var $hydrator \Zend\Hydrator\HydratorInterface */
 
         $hydrator->hydrate($data, $record);
@@ -185,7 +200,7 @@ class Geoip implements EventManagerAwareInterface
     private function getRegions()
     {
         if ($this->regions === null) {
-            $regionVarPath = $this->getConfig()->getRegionVarsPath();
+            $regionVarPath = $this->config->getRegionVarsPath();
             include($regionVarPath);
 
             if (!isset($GEOIP_REGION_NAME)) {
@@ -202,25 +217,12 @@ class Geoip implements EventManagerAwareInterface
     }
 
     /**
-     * @return DatabaseConfig
-     */
-    private function getConfig()
-    {
-        if ($this->config === null) {
-            /* @var $config DatabaseConfig */
-            $config = $this->serviceManager->get(DatabaseConfig::class);
-            $this->config = $config;
-        }
-        return $this->config;
-    }
-
-    /**
      * @return string|null
      */
     private function getDefaultIp()
     {
         if ($this->defaultIp === null) {
-            $request = $this->serviceManager->get('Request');
+            $request = $this->request;
 
             if ($request instanceof HttpRequest) {
                 $ipAddress = $request->getServer('REMOTE_ADDR', false);

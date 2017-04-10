@@ -7,6 +7,7 @@ use ConfidencesTest\ZendGeoip\Asset\ConsoleControllerAsset;
 use Confidences\ZendGeoip\DatabaseConfig;
 use ConfidencesTest\ZendGeoip\Asset\ConsoleControllerDBAsset;
 use ConfidencesTest\ZendGeoip\Util\ServiceManagerFactory;
+use Confidences\ZendGeoip\HttpClientFactory;
 use Zend\Console\ColorInterface as Color;
 use Guzzle\Http\Message\Response;
 use Zend\Console;
@@ -81,7 +82,7 @@ class ConsoleControllerTest extends \PHPUnit\Framework\TestCase
         $this->config = new DatabaseConfig($data);
 
         $serviceManager = ServiceManagerFactory::getServiceManager();
-        $this->client = $serviceManager->get('HttpClient');//bon mais plante
+        $this->client = $serviceManager->get(HttpClientFactory::class);
 
         $this->consoleController = new ConsoleControllerAsset($this->console, $this->config, $this->client);
         $this->trueConsoleController = new ConsoleController($this->console, $this->config, $this->client);
@@ -91,16 +92,6 @@ class ConsoleControllerTest extends \PHPUnit\Framework\TestCase
     public function testGetConsole()
     {
         $this->assertEquals($this->console, $this->consoleController->getConsole());
-    }
-
-    public function testSetHttp()
-    {
-        $this->consoleController->setHttpClient($this->client);
-
-        $reflection_property = $this->reflection->getProperty('httpClient');
-        $reflection_property->setAccessible(true);
-
-        $this->assertEquals($this->client, $reflection_property->getValue($this->consoleController));
     }
 
     public function testDispatchTrue()

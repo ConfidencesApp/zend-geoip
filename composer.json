@@ -1,7 +1,8 @@
 {
-    "name": "ZendGeoip",
+    "name": "confidencesapp/zend-intercom",
     "description": "MaxMind GeoIP Module for Zend Framework 3",
     "license": "BSD-3-Clause",
+    "version": "1.0.0",
     "keywords": [
         "geoip",
         "zf2",

@@ -38,6 +38,7 @@ Or use autoupdate database during install/update in composer (just add this line
     }
 }
 ```
+Add `Confidences\ZendGeoip` to the modules array in your `application.config.php`, preferably as the first module. 
 
 Console usage
 -------------

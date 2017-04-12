@@ -40,7 +40,10 @@
     "autoload": {
         "psr-4": {
             "Confidences\\ZendGeoip\\": "src/"
-        }
+        },
+        "classmap": [
+          "./Module.php"
+        ]
     },
     "scripts": {
         "post-install-cmd": [

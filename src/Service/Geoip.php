@@ -11,7 +11,6 @@ use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\EventManager;
 use Zend\Http\PhpEnvironment\Request as HttpRequest;
-use Zend\Http\Request;
 use Zend\Hydrator\ClassMethods;
 use geoiprecord as GeoipCoreRecord;
 
@@ -28,7 +27,7 @@ class Geoip implements EventManagerAwareInterface
     private $geoip;
 
     /**
-     * @var Request
+     * @var HttpRequest
      */
     private $request;
 
@@ -63,9 +62,9 @@ class Geoip implements EventManagerAwareInterface
 
     /**
      * Geoip constructor
-     * Request $request, DatabaseConfig $config, Array $records, ClassMethods $hydrator
+     * HttpRequest $request, DatabaseConfig $config, Array $records, ClassMethods $hydrator
      */
-    public function __construct(Request $request, DatabaseConfig $config, array $records, ClassMethods $hydrator)
+    public function __construct(HttpRequest $request, DatabaseConfig $config, array $records, ClassMethods $hydrator)
     {
         $this->request = $request;
         $this->config = $config;

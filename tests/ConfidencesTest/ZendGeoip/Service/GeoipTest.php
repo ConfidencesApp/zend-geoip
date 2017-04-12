@@ -4,7 +4,7 @@ namespace ConfidencesTest\ZendGeoip\Service;
 
 use Confidences\ZendGeoip\DatabaseConfig;
 use Confidences\ZendGeoip\Entity\Record;
-use Zend\Http\Request;
+//use Zend\Http\Request;
 use Zend\Http\PhpEnvironment\Request as HttpRequest;
 use Zend\Hydrator\ClassMethods;
 use Confidences\ZendGeoip\Service\Geoip;
@@ -28,7 +28,7 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
     protected $geoip;
 
     /**
-     * @var Request
+     * @var HttpRequest
      */
     protected $request;
 
@@ -57,19 +57,11 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
      */
     protected $serviceManager;
 
-    /**
-     * @var array
-     */
-    protected $ip = array(
-        'local' => '192.168.0.1',
-        'google' => '216.239.51.99',
-    );
-
     protected function setUp()
     {
         $this->serviceManager = ServiceManagerFactory::getServiceManager();
 
-        $this->request = new Request();
+        $this->request = new HttpRequest();
         $data = array('source' => 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz'
         ,'destination' => __DIR__ . '/../../../../data/'
         ,'filename' => 'GeoLiteCity.dat'

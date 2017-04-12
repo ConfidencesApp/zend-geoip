@@ -4,7 +4,7 @@ namespace Confidences\ZendGeoip\Service;
 
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Zend\Hydrator\ClassMethods;
-use Zend\Http\Request;
+use Zend\Http\PhpEnvironment\Request as HttpRequest;
 use Confidences\ZendGeoip\DatabaseConfig;
 use Interop\Container\ContainerInterface;
 use geoiprecord as GeoipCoreRecord;
@@ -21,7 +21,7 @@ class GeoipFactory implements FactoryInterface
      */
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
-        $request = new Request();
+        $request = new HttpRequest();
         $config = $container->get(DatabaseConfig::class);
         $records = array(new GeoipCoreRecord());
         $hydrator = $container->get(ClassMethods::class);

@@ -2,6 +2,7 @@
 
 namespace Confidences\ZendGeoip\View\Helper;
 
+use Confidences\ZendGeoip\Entity\RecordInterface;
 use Zend\View\Helper\AbstractHelper;
 use Confidences\ZendGeoip\Service\Geoip as GeoipService;
 
@@ -28,7 +29,7 @@ class Geoip extends AbstractHelper
     
     /**
      * @param string $ipAddress
-     * @return GeoipService
+     * @return RecordInterface
      */
     public function __invoke($ipAddress = null)
     {

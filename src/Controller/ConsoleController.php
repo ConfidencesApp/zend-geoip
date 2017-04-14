@@ -130,7 +130,7 @@ class ConsoleController extends AbstractActionController
     public function writeLine($text, $color = null, $bgColor = null)
     {
         if (!$this->isQuietMode()) {
-            $this->getConsole()->writeLine($text, $color, $bgColor);
+            $this->console->writeLine($text, $color, $bgColor);
         }
     }
 

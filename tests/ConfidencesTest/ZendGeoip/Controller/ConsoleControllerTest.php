@@ -6,8 +6,6 @@ use Confidences\ZendGeoip\Controller\ConsoleController;
 use ConfidencesTest\ZendGeoip\Asset\ConsoleControllerAsset;
 use Confidences\ZendGeoip\DatabaseConfig;
 use ConfidencesTest\ZendGeoip\Asset\ConsoleControllerDBAsset;
-use ConfidencesTest\ZendGeoip\Asset\ConsoleControllerDBResponseAsset;
-use ConfidencesTest\ZendGeoip\Asset\ConsoleControllerDBStatusAsset;
 use ConfidencesTest\ZendGeoip\Util\ServiceManagerFactory;
 use Confidences\ZendGeoip\HttpClientFactory;
 use Zend\Console\ColorInterface as Color;
@@ -152,7 +150,7 @@ class ConsoleControllerTest extends \PHPUnit\Framework\TestCase
 
         $this->config->expects($this->any())
             ->method('getDatabasePath')
-            ->will($this->returnValue(__DIR__ . '/../../../../data/GeoLiteCity.dat'));
+            ->will($this->returnValue(__DIR__ . '/../Asset/example.json'));
 
         $reflection_property = $this->reflection->getProperty('config');
         $reflection_property->setAccessible(true);
@@ -270,7 +268,7 @@ class ConsoleControllerTest extends \PHPUnit\Framework\TestCase
 
         $this->config->expects($this->once())
             ->method('getSource')
-            ->will($this->returnValue('http://speedtest.ftp.otenet.gr/files/test100k.db'));
+            ->will($this->returnValue('https://wiki.mozilla.org/images/f/ff/Example.json.gz'));
 
         $reflection_property = $this->reflection->getProperty('config');
         $reflection_property->setAccessible(true);

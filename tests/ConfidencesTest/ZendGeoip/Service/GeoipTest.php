@@ -4,7 +4,6 @@ namespace ConfidencesTest\ZendGeoip\Service;
 
 use Confidences\ZendGeoip\DatabaseConfig;
 use Confidences\ZendGeoip\Entity\Record;
-//use Zend\Http\Request;
 use Zend\Http\PhpEnvironment\Request as HttpRequest;
 use Zend\Hydrator\ClassMethods;
 use Confidences\ZendGeoip\Service\Geoip;
@@ -103,7 +102,7 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
 
         $config->expects($this->once())
             ->method('getDatabasePath')
-            ->will($this->returnValue(__DIR__ . '/../../../../data/GeoLiteCity.dat'));
+            ->will($this->returnValue(__DIR__ . '/../Asset/example.json'));
 
         $config->expects($this->once())
             ->method('getFlag')
@@ -113,7 +112,7 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
         $reflection_property->setAccessible(true);
         $reflection_property->setValue($this->geoip, $config);
 
-        $gip = geoip_open(__DIR__ . '/../../../../data/GeoLiteCity.dat', 0);
+        $gip = geoip_open(__DIR__ . '/../Asset/example.json', 0);
 
         $gep = $this->geoip->getGeoip();
 
@@ -162,40 +161,93 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
             ->method('getIpAddress')
             ->will($this->returnValue('192.168.0.1'));
 
-        $this->assertInstanceOf(Record::class, $this->geoip->getRecord($ip));
+        $this->records['192.168.0.1'] = $this->newGeoipCoreRecord();
+
+        $reflection_property = $this->reflection->getProperty('records');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->geoip, $this->records);
+
+        $this->assertEquals($this->records['192.168.0.1'], $this->geoip->getGeoipRecord($ip));
     }
 
     public function testGetRecordTrue()
     {
+        $this->records['216.239.51.99'] = $this->newGeoipCoreArray();
+
+        $reflection_property = $this->reflection->getProperty('records');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->geoip, $this->records);
+
         $this->assertNotNull($this->geoip->getRecord('216.239.51.99'));
     }
 
-    public function testGetRecordInterfaceGeoipCoreFalse()
+    public function testGetRecordGeoipCoreFalse()
     {
+        $this->records['216.239.51.99'] = $this->newGeoipCoreArray();
+
+        $reflection_property = $this->reflection->getProperty('records');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->geoip, $this->records);
+
         $this->assertInstanceOf(Record::class, $this->geoip->getRecord());
     }
 
     public function testLookup()
     {
+        $this->records['216.239.51.99'] = $this->newGeoipCoreArray();
+
+        $reflection_property = $this->reflection->getProperty('records');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->geoip, $this->records);
+
         $this->assertInstanceOf(Record::class, $this->geoip->lookup());
     }
 
     public function testGetDefaultIpNotNull()
     {
+        $this->records['192.168.0.1'] = $this->newGeoipCoreRecord();
+
+        $reflection_property = $this->reflection->getProperty('records');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->geoip, $this->records);
+
         $reflection_property = $this->reflection->getProperty('defaultIp');
         $reflection_property->setAccessible(true);
         $reflection_property->setValue($this->geoip, '192.168.0.1');
 
-        $this->assertNull($this->geoip->getGeoipRecord(null));
+        $this->assertEquals($this->records['192.168.0.1'], $this->geoip->getGeoipRecord(null));
     }
 
+    /**
+     * @expectedException DomainException
+     */
     public function testGetDefaultIpNullFalse()
     {
-        $this->assertInstanceOf(Record::class, $this->geoip->getRecord());
+        $reflection_property = $this->reflection->getProperty('request');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->geoip, null);
+
+        $this->geoip->getGeoipRecord(null);
     }
 
     public function testGetDefaultIpNullTrue()
     {
+        $config = $this->getMockBuilder(DatabaseConfig::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $config->expects($this->once())
+            ->method('getDatabasePath')
+            ->will($this->returnValue(__DIR__ . '/../Asset/test.txt'));
+
+        $config->expects($this->once())
+            ->method('getFlag')
+            ->will($this->returnValue(0));
+
+        $reflection_property = $this->reflection->getProperty('config');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->geoip, $config);
+
         $request = $this->getMockBuilder(HttpRequest::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -207,17 +259,28 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
         $this->assertInstanceOf(Record::class, $this->geoip->getRecord());
     }
 
+    public function testGetRegionNameRegionNull()
+    {
+        $regions = ['test' => ['test' => 'test']];
+
+        $reflection_property = $this->reflection->getProperty('regions');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->geoip, $regions);
+
+        $this->records['216.239.51.99'] = $this->newGeoipCoreRecord();
+
+        $reflection_property = $this->reflection->getProperty('records');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->geoip, $this->records);
+
+        $this->assertNotNull($this->geoip->getRecord('216.239.51.99'));
+    }
+
     /**
      * @expectedException DomainException
      */
     public function testGetRegionsNullFalse()
     {
-        $gip = $this->geoip->getGeoip();
-
-        $reflection_property = $this->reflection->getProperty('geoip');
-        $reflection_property->setAccessible(true);
-        $reflection_property->setValue($this->geoip, $gip);
-
         $config = $this->getMockBuilder(DatabaseConfig::class)
             ->disableOriginalConstructor()
             ->getMock();
@@ -234,16 +297,34 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
         $reflection_property->setAccessible(true);
         $reflection_property->setValue($this->geoip, null);
 
+        $this->records['216.239.51.99'] = $this->newGeoipCoreRecord();
+
+        $reflection_property = $this->reflection->getProperty('records');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->geoip, $this->records);
+
         $this->geoip->getRecord('216.239.51.99');
     }
 
     public function testGetRegionsNullTrue()
     {
+        $this->records['216.239.51.99'] = $this->newGeoipCoreArray();
+
+        $reflection_property = $this->reflection->getProperty('records');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->geoip, $this->records);
+
         $this->assertInstanceOf(Record::class, $this->geoip->getRecord('216.239.51.99'));
     }
 
     public function testGetRegionsNotNull()
     {
+        $this->records['216.239.51.99'] = $this->newGeoipCoreArray();
+
+        $reflection_property = $this->reflection->getProperty('records');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->geoip, $this->records);
+
         $regions = array();
 
         $reflection_property = $this->reflection->getProperty('regions');
@@ -251,5 +332,44 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
         $reflection_property->setValue($this->geoip, $regions);
 
         $this->assertInstanceOf(Record::class, $this->geoip->getRecord('216.239.51.99'));
+    }
+
+    private function newGeoipCoreRecord()
+    {
+        $gip = $this->getMockBuilder(GeoipCoreRecord::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $gip->country_code = 'test';
+        $gip->country_code3 = 'test';
+        $gip->country_name = 'test';
+        $gip->region = 'test';
+        $gip->city = 'test';
+        $gip->postal_code = 'test';
+        $gip->latitude = 'test';
+        $gip->longitude = 'test';
+        $gip->area_code = 'test';
+        $gip->dma_code = 'test';
+        $gip->metro_code = 'test';
+        $gip->continent_code = 'test';
+
+        return $gip;
+    }
+
+    private function newGeoipCoreArray()
+    {
+        return [ 'country_code' => 'test',
+            'country_code3' => 'test',
+            'country_name' => 'test',
+            'region' => 'test',
+            'city' => 'test',
+            'postal_code' => 'test',
+            'latitude' => 'test',
+            'longitude'=> 'test',
+            'area_code' => 'test',
+            'dma_code' => 'test',
+            'metro_code' => 'test',
+            'continent_code' => 'test'
+        ];
     }
 }

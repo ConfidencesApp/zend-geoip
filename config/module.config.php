@@ -45,6 +45,9 @@ return [
         'factories' => [
             Helper\Geoip::class => Helper\GeoipFactory::class,
         ],
+        'aliases' => [
+            'geoip' => Helper\Geoip::class,
+        ]
     ],
     'controllers' => [
         'factories' => [

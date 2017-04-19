@@ -14,7 +14,7 @@ Via [composer.json](https://getcomposer.org/)
 ```json
 {
     "require": {
-        "confidencesapp/zend-geoip": "1.0.1"
+        "confidencesapp/zend-geoip": "1.*"
     }
 }
 ```

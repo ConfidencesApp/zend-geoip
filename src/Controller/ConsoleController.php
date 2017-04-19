@@ -75,9 +75,9 @@ class ConsoleController extends AbstractActionController
         $events = $this->getEventManager();
 
         if ($this->getRequest()->getParam('no-clobber') && is_file($datFilePath)) {
-            $events->trigger(__FUNCTION__ . '.exists', $this, array(
+            $events->trigger(__FUNCTION__ . '.exists', $this, [
                 'path' => $datFilePath,
-            ));
+            ]);
             $this->writeLine('Database already exist. Skipping...');
             return;
         }
@@ -94,19 +94,19 @@ class ConsoleController extends AbstractActionController
             return;
         }
 
-        $events->trigger(__FUNCTION__ . '.pre', $this, array(
+        $events->trigger(__FUNCTION__ . '.pre', $this, [
             'path' => $datFilePath,
             'response' => $response,
-        ));
+        ]);
 
         $this->writeLineSuccess('Download completed');
         $this->writeLine('Unzip the downloading data...');
 
         file_put_contents($datFilePath, gzdecode($response->getBody()));
 
-        $events->trigger(__FUNCTION__ . '.post', $this, array(
+        $events->trigger(__FUNCTION__ . '.post', $this, [
             'path' => $datFilePath,
-        ));
+        ]);
         $this->writeLineSuccess(sprintf('Unzip completed (%s)', $datFilePath));
     }
 

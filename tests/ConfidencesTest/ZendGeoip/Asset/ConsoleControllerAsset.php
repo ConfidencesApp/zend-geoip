@@ -20,9 +20,9 @@ class ConsoleControllerAsset extends ConsoleController
         $events = $this->getEventManager();
 
         if ($this->getRequest()->getParam('no-clobber') && is_file($datFilePath)) {
-            $events->trigger(__FUNCTION__ . '.exists', $this, array(
+            $events->trigger(__FUNCTION__ . '.exists', $this, [
                 'path' => $datFilePath,
-            ));
+            ]);
             $this->writeLine('Database already exist. Skipping...');
             return;
         }
@@ -39,19 +39,19 @@ class ConsoleControllerAsset extends ConsoleController
             return;
         }
 
-        $events->trigger(__FUNCTION__ . '.pre', $this, array(
+        $events->trigger(__FUNCTION__ . '.pre', $this, [
             'path' => $datFilePath,
             'response' => $response,
-        ));
+        ]);
 
         $this->writeLineSuccess('Download completed');
         $this->writeLine('Unzip the downloading data...');
 
         $fpc = file_put_contents($datFilePath, gzdecode($response->getBody()));
 
-        $events->trigger(__FUNCTION__ . '.post', $this, array(
+        $events->trigger(__FUNCTION__ . '.post', $this, [
             'path' => $datFilePath,
-        ));
+        ]);
         $this->writeLineSuccess(sprintf('Unzip completed (%s)', $datFilePath));
 
         return $fpc;
@@ -60,7 +60,7 @@ class ConsoleControllerAsset extends ConsoleController
     public function writeLine($text, $color = null, $bgColor = null)
     {
         if (!$this->isQuietMode()) {
-            $param = array('text' => $text, 'color' => $color, 'bgColor' => $bgColor);
+            $param = ['text' => $text, 'color' => $color, 'bgColor' => $bgColor];
             $this->getConsole()->writeLine($text, $color, $bgColor);
             return $param;
         }

@@ -72,12 +72,12 @@ class ConsoleControllerTest extends \PHPUnit\Framework\TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $data = array('source' => 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz'
+        $data = ['source' => 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz'
         ,'destination' => __DIR__ . '/../../../../data/'
         ,'filename' => 'GeoLiteCity.dat'
         ,'flag' => GEOIP_STANDARD
         ,'regionvars' => __DIR__ . '/../../../geoip/geoip/src/geoipregionvars.php'
-        );
+        ];
         $this->config = new DatabaseConfig($data);
 
         $serviceManager = ServiceManagerFactory::getServiceManager();
@@ -186,7 +186,7 @@ class ConsoleControllerTest extends \PHPUnit\Framework\TestCase
 
         $this->config->expects($this->once())
             ->method('getSource')
-            ->will($this->returnValue('test.txt.gz'));
+            ->will($this->returnValue(__DIR__ . '/../Asset/test.txt.gz'));
 
         $this->console->expects($this->any())
             ->method('writeLine')
@@ -295,7 +295,7 @@ class ConsoleControllerTest extends \PHPUnit\Framework\TestCase
         $reflection_property->setAccessible(true);
         $reflection_property->setValue($this->fakeconsoleController, $this->request);
 
-        $param = array('text' => 'WriteLine', 'color' => null, 'bgColor' => null);
+        $param = ['text' => 'WriteLine', 'color' => null, 'bgColor' => null];
         $this->assertEquals($param, $this->fakeconsoleController->writeLine('WriteLine'));
     }
 
@@ -326,7 +326,7 @@ class ConsoleControllerTest extends \PHPUnit\Framework\TestCase
         $reflection_property->setAccessible(true);
         $reflection_property->setValue($this->fakeconsoleController, $this->request);
 
-        $param = array('text' => 'WriteLineError', 'color' => Color::WHITE, 'bgColor' => Color::RED);
+        $param = ['text' => 'WriteLineError', 'color' => Color::WHITE, 'bgColor' => Color::RED];
         $this->assertEquals($param, $this->fakeconsoleController->writeLineError('WriteLineError'));
     }
 
@@ -340,7 +340,7 @@ class ConsoleControllerTest extends \PHPUnit\Framework\TestCase
         $reflection_property->setAccessible(true);
         $reflection_property->setValue($this->fakeconsoleController, $this->request);
 
-        $param = array('text' => 'WriteLineSuccess', 'color' => Color::LIGHT_GREEN, 'bgColor' => null);
+        $param = ['text' => 'WriteLineSuccess', 'color' => Color::LIGHT_GREEN, 'bgColor' => null];
         $this->assertEquals($param, $this->fakeconsoleController->writeLineSuccess('WriteLineSuccess'));
     }
 

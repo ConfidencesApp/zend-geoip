@@ -61,14 +61,14 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
         $this->serviceManager = ServiceManagerFactory::getServiceManager();
 
         $this->request = new HttpRequest();
-        $data = array('source' => 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz'
+        $data = ['source' => 'http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz'
         ,'destination' => __DIR__ . '/../../../../data/'
         ,'filename' => 'GeoLiteCity.dat'
         ,'flag' => GEOIP_STANDARD
         ,'regionvars' => __DIR__ . '/../../../../vendor/geoip/geoip/src/geoipregionvars.php'
-        );
+        ];
         $this->config = new DatabaseConfig($data);
-        $this->records = array(new GeoipCoreRecord());
+        $this->records = [new GeoipCoreRecord()];
         $this->hydrator = new ClassMethods();
 
         $this->geoip = new Geoip($this->request, $this->config, $this->records, $this->hydrator);
@@ -141,7 +141,7 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
 
     public function testGetGeoipRecord()
     {
-        $records = array('192.168.0.1' => '192.168.0.1');
+        $records = ['192.168.0.1' => '192.168.0.1'];
 
         $reflection_property = $this->reflection->getProperty('records');
         $reflection_property->setAccessible(true);
@@ -325,7 +325,7 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
         $reflection_property->setAccessible(true);
         $reflection_property->setValue($this->geoip, $this->records);
 
-        $regions = array();
+        $regions = [];
 
         $reflection_property = $this->reflection->getProperty('regions');
         $reflection_property->setAccessible(true);

@@ -24,12 +24,12 @@ class DatabaseConfigTest extends \PHPUnit\Framework\TestCase
 
     public function setUp()
     {
-        $this->data = array('source' => 'geolite'
+        $this->data = ['source' => 'geolite'
             ,'destination' => 'destination'
             ,'filename' => 'GeoLiteCity.dat'
             ,'flag' => 0
             ,'regionvars' => 'RegionVarsPath'
-        );
+        ];
         $this->databaseConfig = new DatabaseConfig($this->data);
         $this->reflection = new ReflectionClass($this->databaseConfig);
     }

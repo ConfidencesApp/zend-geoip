@@ -23,7 +23,7 @@ class GeoipFactory implements FactoryInterface
     {
         $request = new HttpRequest();
         $config = $container->get(DatabaseConfig::class);
-        $records = array(new GeoipCoreRecord());
+        $records = [new GeoipCoreRecord()];
         $hydrator = $container->get(ClassMethods::class);
         return new Geoip($request, $config, $records, $hydrator);
     }

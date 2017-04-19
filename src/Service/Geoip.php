@@ -124,9 +124,9 @@ class Geoip implements EventManagerAwareInterface
         if ($ipAddress instanceof IpAwareInterface) {
             $ipAddress = $ipAddress->getIpAddress();
         }
-        $this->getEventManager()->trigger(__FUNCTION__, $this, array(
+        $this->getEventManager()->trigger(__FUNCTION__, $this, [
             'ip' => $ipAddress,
-        ));
+        ]);
 
         return $ipAddress;
     }
@@ -154,9 +154,9 @@ class Geoip implements EventManagerAwareInterface
 
         $hydrator->hydrate($data, $record);
 
-        $this->getEventManager()->trigger(__FUNCTION__, $this, array(
+        $this->getEventManager()->trigger(__FUNCTION__, $this, [
             'record' => $record,
-        ));
+        ]);
 
         return $record;
     }
@@ -197,9 +197,9 @@ class Geoip implements EventManagerAwareInterface
 
             $this->regions = $GEOIP_REGION_NAME;
 
-            $this->getEventManager()->trigger(__FUNCTION__, $this, array(
+            $this->getEventManager()->trigger(__FUNCTION__, $this, [
                 'regions' => $this->regions,
-            ));
+            ]);
         }
         return $this->regions;
     }
@@ -227,7 +227,7 @@ class Geoip implements EventManagerAwareInterface
      * @param array $data
      * @return string
      */
-    private function getRegionName(array $data = array())
+    private function getRegionName(array $data = [])
     {
         $regions = $this->getRegions();
         $countryCode = isset($data['country_code']) ? $data['country_code'] : null;
@@ -260,10 +260,10 @@ class Geoip implements EventManagerAwareInterface
      */
     public function setEventManager(EventManagerInterface $eventManager)
     {
-        $eventManager->setIdentifiers(array(
+        $eventManager->setIdentifiers([
             __CLASS__,
             get_called_class(),
-        ));
+        ]);
         $this->eventManager = $eventManager;
 
         return $this;

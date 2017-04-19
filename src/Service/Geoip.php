@@ -74,7 +74,6 @@ class Geoip implements EventManagerAwareInterface
 
     /**
      * Destructor
-     * @codeCoverageIgnore
      */
     public function __destruct()
     {
@@ -172,7 +171,6 @@ class Geoip implements EventManagerAwareInterface
 
     /**
      * @return self
-     * @codeCoverageIgnore
      */
     private function closeGeoip()
     {

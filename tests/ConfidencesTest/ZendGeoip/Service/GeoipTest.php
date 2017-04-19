@@ -75,6 +75,29 @@ class GeoipTest extends \PHPUnit\Framework\TestCase
         $this->reflection = new \ReflectionClass($this->geoip);
     }
 
+    public function testDestruct()
+    {
+        $config = $this->getMockBuilder(DatabaseConfig::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $config->expects($this->any())
+            ->method('getDatabasePath')
+            ->will($this->returnValue(__DIR__ . '/../Asset/test.txt'));
+
+        $config->expects($this->any())
+            ->method('getFlag')
+            ->will($this->returnValue(0));
+
+        $reflection_property = $this->reflection->getProperty('config');
+        $reflection_property->setAccessible(true);
+        $reflection_property->setValue($this->geoip, $config);
+
+        $expected = $this->geoip->getGeoip();
+        $this->geoip->__destruct();
+        $this->assertNotEquals(spl_object_hash($expected), spl_object_hash($this->geoip->getGeoip()));
+    }
+
     public function testValidTestDependencies()
     {
         $this->assertInstanceOf(Geoip::class, $this->geoip);

@@ -2,7 +2,7 @@
     "name": "confidencesapp/zend-geoip",
     "description": "MaxMind GeoIP Module for Zend Framework 3",
     "license": "BSD-3-Clause",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "keywords": [
         "geoip",
         "zf3",

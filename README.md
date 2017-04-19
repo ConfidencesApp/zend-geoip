@@ -79,12 +79,12 @@ Returns country name for given IP:
 <?php echo $this->geoip('184.106.35.179')->getCountryName() ?>
 ```
 
-You can also implements `\ZendGeoip\IpAwareInterface` interface and then use instance in service/helper:
+You can also implements `\Confidences\ZendGeoip\IpAwareInterface` interface and then use instance in service/helper:
 ```php
 <?php echo $this->geoip($user)->getTimezone() ?>
 ```
 
-Available getter methods via `\ZendGeoip\Entity\Record`:
+Available getter methods via `\Confidences\ZendGeoip\Entity\Record`:
 ```
 getAreaCode()
 getCity()
@@ -109,9 +109,9 @@ Module supports `\Zend\EventManager`.
 
 Class | Event name | Description | Params
 --- | --- | --- | ---
-ZendGeoip\Controller\ConsoleController | downloadAction.exists | If no-clobber is enabled and file exists | path (to dat file)
-ZendGeoip\Controller\ConsoleController | downloadAction.pre | Before unzip file | path (to dat file), response (gziped response object)
-ZendGeoip\Controller\ConsoleController | downloadAction.post | After unzip file | path (to dat file)
-ZendGeoip\Service\Geoip | getIp | After read IP | ip (ip address)
-ZendGeoip\Service\Geoip | getRecord | After created record | record (instance of ZendGeoip\Entity\RecordInterface)
-ZendGeoip\Service\Geoip | getRegions | After first loading regions names | regions
+Confidences\ZendGeoip\Controller\ConsoleController | downloadAction.exists | If no-clobber is enabled and file exists | path (to dat file)
+Confidences\ZendGeoip\Controller\ConsoleController | downloadAction.pre | Before unzip file | path (to dat file), response (gziped response object)
+Confidences\ZendGeoip\Controller\ConsoleController | downloadAction.post | After unzip file | path (to dat file)
+Confidences\ZendGeoip\Service\Geoip | getIp | After read IP | ip (ip address)
+Confidences\ZendGeoip\Service\Geoip | getRecord | After created record | record (instance of Confidences\ZendGeoip\Entity\RecordInterface)
+Confidences\ZendGeoip\Service\Geoip | getRegions | After first loading regions names | regions

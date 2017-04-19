@@ -14,7 +14,7 @@ Via [composer.json](https://getcomposer.org/)
 ```json
 {
     "require": {
-        "confidencesapp/zend-geoip": "dev-master"
+        "confidencesapp/zend-geoip": "1.0.0"
     }
 }
 ```
@@ -58,12 +58,12 @@ Default ZendGeoip returns Record object created by current user's IP address.
 **In controller:**
 
 ```php
-$record = $this->getServiceManager()->get(Geoip::class)->getRecord();
+$record = $geoip->getRecord();
 echo $record->getCity();
 ```
 
 ```php
-$record = $this->getServiceManager()->get(Geoip::class)->getRecord('216.239.51.99');
+$record = $geoip->getRecord('216.239.51.99');
 echo $record->getLongitude();
 echo $record->getLatitude();
 ```
